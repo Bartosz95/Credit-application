@@ -2,6 +2,8 @@ package pl.inteca.product;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import pl.inteca.product.domain.Product;
+import pl.inteca.product.repository.ProductRepository;
 
 @SpringBootApplication
 public class ProductApplication {

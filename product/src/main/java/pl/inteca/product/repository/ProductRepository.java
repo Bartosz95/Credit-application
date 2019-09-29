@@ -1,24 +1,28 @@
 package pl.inteca.product.repository;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Component;
 import pl.inteca.product.api.Repository;
 import pl.inteca.product.domain.Product;
 
-import java.security.PrivateKey;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Configuration
 @PropertySource("classpath:application.properties")
-@Component
 public class ProductRepository implements Repository<Product, Long> {
 
+    // values with annotation @Value are inside file  /src/main/resources/application.properties
     @Value("${database.url}")
     private String url;
     @Value("${database.user}")
@@ -34,37 +38,45 @@ public class ProductRepository implements Repository<Product, Long> {
 
     String query;
 
-    public ProductRepository() throws ClassNotFoundException, SQLException {
-        query ="CREATE TABLE product (ID LONG NOT NULL, NAME VARCHAR(100), VALUE LONG PRIMARY KEY (ID)) IF NOT EXIST";
-        Class.forName(driver);
-        Connection connection = DriverManager.getConnection(url,user,password);
-        Statement statement = connection.createStatement();
-        System.out.println(statement.executeUpdate(query));
-        // todo continue create database
-        statement.close();
-        connection.close();
+    // Function createTable() create table "product" in database
+    @Autowired
+    public void createTable() throws ClassNotFoundException, SQLException {
+            query = "CREATE TABLE IF NOT EXISTS products (" +
+                    "id BIGINT NOT NULL AUTO_INCREMENT," +
+                    "name VARCHAR(255)," +
+                    "value BIGINT," +
+                    "PRIMARY KEY (id))";
+            Class.forName(driver);
+            Connection connection = DriverManager.getConnection(url,user,password);
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(query);
+            statement.close();
+            connection.close();
     }
 
-
-
-
+    // Function save product in table product
     @Override
-    public Product save(Product item) throws SQLException, ClassNotFoundException {
-        query = String.format("INSERT INTO product(name, value) VALUES (NULL,%s, %d)",item.getName(), item.getValue());
+    public Product save(Product product) throws ClassNotFoundException, SQLException {
+        query = String.format("INSERT INTO products (name, value) VALUES ('%s', '%d' )", // id autoincrement that why we don't insert it
+                product.getName(), product.getValue());
         Class.forName(driver);
         Connection connection = DriverManager.getConnection(url,user,password);
         Statement statement = connection.createStatement();
-        int i = statement.executeUpdate(query);
+        statement.executeUpdate(query);
+        ResultSet result = statement.executeQuery("SELECT LAST_INSERT_ID() AS id FROM products");  // get current product id
+        if(result.next()){
+            long id = result.getLong("id");
+            product.setId(id);
+        }
         statement.close();
         connection.close();
-        Product product = new Product();
-        product.setId(i); // todo find and return new object
         return product;
     }
 
+    // Function return all products form table products
     @Override
-    public List<Product> findAll() throws ClassNotFoundException, SQLException {
-        query = "SELECT * FROM product";
+    public List<Product> findAll() throws SQLException, ClassNotFoundException {
+        query = "SELECT * FROM products";
         Class.forName(driver);
         Connection connection = DriverManager.getConnection(url,user,password);
         Statement statement = connection.createStatement();
@@ -81,25 +93,5 @@ public class ProductRepository implements Repository<Product, Long> {
         statement.close();
         connection.close();
         return products;
-    }
-
-    @Override
-    public Product findAllById(Long id) {
-        return null;
-    }
-
-    @Override
-    public void deleteById(Long id) {
-
-    }
-
-    @Override
-    public void delete(Product item) {
-
-    }
-
-    @Override
-    public void deleteAll() {
-
     }
 }

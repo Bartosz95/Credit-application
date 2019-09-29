@@ -1,8 +1,7 @@
 package pl.inteca.product.controllers;
 
-import org.springframework.web.bind.annotation.*;
-import pl.inteca.product.api.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 import pl.inteca.product.domain.Product;
 import pl.inteca.product.repository.ProductRepository;
 
@@ -10,7 +9,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/product")
+@RequestMapping("/api/v1/products")
 public class ProductController {
 
     @Autowired
@@ -25,7 +24,7 @@ public class ProductController {
     @GetMapping
     public @ResponseBody
     List<Product> getProducts() throws SQLException, ClassNotFoundException {
-        return repository.findAll();
+       return repository.findAll();
     }
 
 }
