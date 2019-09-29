@@ -16,13 +16,12 @@ import java.util.List;
 
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @Configuration
 @PropertySource("classpath:application.properties")
 public class ProductRepository implements Repository<Product, Long> {
 
-    // values with annotation @Value are inside file  /src/main/resources/application.properties
+    // values with annotation @Value are inside file /src/main/resources/application.properties
     @Value("${database.url}")
     private String url;
     @Value("${database.user}")
@@ -32,21 +31,19 @@ public class ProductRepository implements Repository<Product, Long> {
     @Value("${database.driver}")
     private String driver;
 
-    private Connection connection;
-
-    private Statement statement;
-
-    String query;
+    @Autowired // apply driver for mysql database
+    public void applyDriver() throws ClassNotFoundException {
+        Class.forName(driver);
+    }
 
     // Function createTable() create table "product" in database
     @Autowired
-    public void createTable() throws ClassNotFoundException, SQLException {
-            query = "CREATE TABLE IF NOT EXISTS products (" +
+    public void createTable() throws SQLException {
+            String query = "CREATE TABLE IF NOT EXISTS products (" +
                     "id BIGINT NOT NULL AUTO_INCREMENT," +
                     "name VARCHAR(255)," +
                     "value BIGINT," +
                     "PRIMARY KEY (id))";
-            Class.forName(driver);
             Connection connection = DriverManager.getConnection(url,user,password);
             Statement statement = connection.createStatement();
             statement.executeUpdate(query);
@@ -56,42 +53,42 @@ public class ProductRepository implements Repository<Product, Long> {
 
     // Function save product in table product
     @Override
-    public Product save(Product product) throws ClassNotFoundException, SQLException {
-        query = String.format("INSERT INTO products (name, value) VALUES ('%s', '%d' )", // id autoincrement that why we don't insert it
-                product.getName(), product.getValue());
-        Class.forName(driver);
-        Connection connection = DriverManager.getConnection(url,user,password);
-        Statement statement = connection.createStatement();
-        statement.executeUpdate(query);
-        ResultSet result = statement.executeQuery("SELECT LAST_INSERT_ID() AS id FROM products");  // get current product id
-        if(result.next()){
-            long id = result.getLong("id");
-            product.setId(id);
+    public Product save(Product product) {
+        try (Connection connection = DriverManager.getConnection(url,user,password);
+             Statement statement = connection.createStatement()) {
+            // insert product into table
+            // id is autoincrement
+            String query = String.format("INSERT INTO products (name, value) " +
+                    "VALUES ('%s', '%d' )", product.getName(), product.getValue());
+            statement.executeUpdate(query);
+            query = "SELECT LAST_INSERT_ID() AS id FROM products"; // get new product id
+            ResultSet result = statement.executeQuery(query);
+            if(result.next())
+                product.setId(result.getLong("id"));
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
         }
-        statement.close();
-        connection.close();
         return product;
     }
 
     // Function return all products form table products
     @Override
-    public List<Product> findAll() throws SQLException, ClassNotFoundException {
-        query = "SELECT * FROM products";
-        Class.forName(driver);
-        Connection connection = DriverManager.getConnection(url,user,password);
-        Statement statement = connection.createStatement();
-        ResultSet result = statement.executeQuery(query);
+    public List<Product> findAll() {
         List<Product> products = new ArrayList<>();
-        while (result.next()){
-            Product product = Product.builder()
-                    .id(result.getLong("id"))
-                    .name(result.getString("name"))
-                    .value(result.getLong("value"))
-                    .build();
-            products.add(product);
+        try(Connection connection = DriverManager.getConnection(url,user,password);
+            Statement statement = connection.createStatement()) {
+            String query = "SELECT * FROM products";
+            ResultSet result = statement.executeQuery(query);
+            while (result.next()) {
+                products.add(Product.builder() // create product by Builder and add to list
+                        .id(result.getLong("id"))
+                        .name(result.getString("name"))
+                        .value(result.getLong("value"))
+                        .build());
+            }
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
         }
-        statement.close();
-        connection.close();
         return products;
     }
 }

@@ -17,13 +17,13 @@ public class ProductController {
 
     @PostMapping
     public @ResponseBody
-    Product createProduct(@RequestBody Product product) throws SQLException, ClassNotFoundException {
+    Product createProduct(@RequestBody Product product) {
         return repository.save(product);
     }
 
     @GetMapping
     public @ResponseBody
-    List<Product> getProducts() throws SQLException, ClassNotFoundException {
+    List<Product> getProducts() {
        return repository.findAll();
     }
 
