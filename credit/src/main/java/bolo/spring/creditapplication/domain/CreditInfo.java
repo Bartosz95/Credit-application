@@ -1,20 +1,15 @@
 package bolo.spring.creditapplication.domain;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Credit {
-    long id;
+public class CreditInfo {
+    Customer customer;
+    Product product;
+    Credit credit;
 
-    String name;
-
-    long productId;
-
-    long customerId;
 }
