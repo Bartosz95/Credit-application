@@ -28,6 +28,8 @@ public class CreditRepository implements Repository<Credit, Long> {
         String query = "CREATE TABLE IF NOT EXISTS credits (" +
                 "id BIGINT NOT NULL AUTO_INCREMENT," +
                 "name VARCHAR(255)," +
+                "customerId BIGINT NOT NULL," +
+                "productId BIGINT NOT NULL," +
                 "PRIMARY KEY (id))";
         jdbcTemplate.execute(query);
     }
@@ -35,8 +37,9 @@ public class CreditRepository implements Repository<Credit, Long> {
     @Override
     public Credit save(Credit credit) {
 
-        String query = String.format("INSERT INTO credits (name) " +
-                    "VALUES ('%s')", credit.getName());
+        String query = String.format("INSERT INTO credits (name, customerId, productId)  VALUES ('%s', '%d', '%d')",
+                credit.getName(), credit.getCustomerId(), credit.getProductId());
+        System.out.println(query);
         jdbcTemplate.update(query);
         query = "SELECT * FROM credits WHERE id=LAST_INSERT_ID()"; // get new credit id
         return jdbcTemplate.queryForObject(query, new CreditRowMapper());

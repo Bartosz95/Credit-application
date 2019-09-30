@@ -9,6 +9,7 @@ import ch.qos.logback.core.net.server.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -35,30 +36,41 @@ public class CreditController {
     RestTemplate restTemplate;
 
 
-    @PostMapping
+    @PostMapping("${server.post}")
     public @ResponseBody
     long createCredit(@RequestBody CreditRequest request){
 
-        // todo
         System.out.println(request);
+        Customer customer = createCustomer(request.getCustomer());
+        Product product = createProduct(request.getProduct());
 
-//        Credit credit = Credit.builder()
-//                .name(name)
-//                .build();
-
-        return 1L; //repository.save(credit).getId();
+        Credit credit = request.getCredit();
+        credit.setCustomerId(customer.getId());
+        credit.setProductId(product.getId());
+        System.out.println(credit);
+        return repository.save(credit).getId();
     }
 
-    @GetMapping
+    @GetMapping("${server.get}")
     public @ResponseBody
     Iterable<Credit> getCredits(){
-      return repository.findAll();
+        return repository.findAll();
     }
 
+    Customer createCustomer(Customer customer){
+        HttpEntity<Customer> request = new HttpEntity<>(customer);
+        return restTemplate.postForObject(customersUrl, request, Customer.class);
+    }
 
+    //assertThat(foo, notNullValue());
+    //assertThat(foo.getName(), is("bar"));
+    Product createProduct(Product product){
+        HttpEntity<Product> request = new HttpEntity<>(product);
+        return restTemplate.postForObject(productUrl, request, Product.class);
+    }
 
     List<Customer> getCustomers(){
-        ResponseEntity<Customer[]> response = restTemplate.getForEntity(productUrl, Customer[].class);
+        ResponseEntity<Customer[]> response = restTemplate.getForEntity(customersUrl, Customer[].class);
         List<Customer> customers = new ArrayList<>();
         Collections.addAll(customers, Objects.requireNonNull(response.getBody()));
         return customers;

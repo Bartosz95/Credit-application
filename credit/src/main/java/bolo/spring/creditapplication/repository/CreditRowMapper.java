@@ -12,6 +12,8 @@ public class CreditRowMapper implements RowMapper<Credit> {
         return Credit.builder()
                 .id(rs.getLong("id"))
                 .name(rs.getString("name"))
+                .customerId(rs.getLong("customerId"))
+                .productId(rs.getLong("productId"))
                 .build();
     }
 }

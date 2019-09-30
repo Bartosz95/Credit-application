@@ -14,7 +14,7 @@ public class Credit {
 
     String name;
 
-    long productId;
-
     long customerId;
+
+    long productId;
 }
