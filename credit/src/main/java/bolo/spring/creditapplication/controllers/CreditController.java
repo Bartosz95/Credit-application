@@ -1,11 +1,10 @@
 package bolo.spring.creditapplication.controllers;
 
 import bolo.spring.creditapplication.domain.Credit;
-import bolo.spring.creditapplication.domain.CreditInfo;
 import bolo.spring.creditapplication.domain.Customer;
 import bolo.spring.creditapplication.domain.Product;
 import bolo.spring.creditapplication.repository.CreditRepository;
-import ch.qos.logback.core.net.server.Client;
+import bolo.spring.creditapplication.repository.CreditRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -24,64 +23,56 @@ import java.util.Objects;
 @RequestMapping("${server.path}")
 public class CreditController {
 
-    @Value("${products.url}")
-    String productUrl;
-    @Value("${customers.url}")
-    String customersUrl;
-
     @Autowired
     private CreditRepository repository;
-
-    @Autowired
-    RestTemplate restTemplate;
-
 
     @PostMapping("${server.post}")
     public @ResponseBody
     long createCredit(@RequestBody CreditRequest request){
 
-        System.out.println(request);
-        Customer customer = createCustomer(request.getCustomer());
-        Product product = createProduct(request.getProduct());
+        Customer customer = repository.createCustomer(request.getCustomer());
+        Product product = repository.createProduct(request.getProduct());
 
         Credit credit = request.getCredit();
         credit.setCustomerId(customer.getId());
         credit.setProductId(product.getId());
-        System.out.println(credit);
         return repository.save(credit).getId();
     }
 
     @GetMapping("${server.get}")
     public @ResponseBody
-    Iterable<Credit> getCredits(){
-        return repository.findAll();
+    List<CreditRequest> getCredits(){
+
+        List<Customer> customers = repository.getCustomers();
+
+        List<Product> products = repository.getProducts();
+
+        List<Credit> credits = repository.findAll();
+
+        List<CreditRequest> creditList = new ArrayList<>();
+
+        for(Credit credit : credits){
+            Customer customer = customers.stream()
+                    .filter(customer1 -> credit.getCustomerId() == customer1.getId())
+                    .findFirst()
+                    .orElse(null);
+
+            Product product = products.stream()
+                    .filter(product1 -> credit.getProductId() == product1.getId())
+                    .findFirst()
+                    .orElse(null);
+
+            creditList.add(CreditRequest.builder()
+                    .credit(credit)
+                    .customer(customer)
+                    .product(product)
+                    .build());
+        }
+
+        return creditList;
     }
 
-    Customer createCustomer(Customer customer){
-        HttpEntity<Customer> request = new HttpEntity<>(customer);
-        return restTemplate.postForObject(customersUrl, request, Customer.class);
-    }
 
-    //assertThat(foo, notNullValue());
-    //assertThat(foo.getName(), is("bar"));
-    Product createProduct(Product product){
-        HttpEntity<Product> request = new HttpEntity<>(product);
-        return restTemplate.postForObject(productUrl, request, Product.class);
-    }
-
-    List<Customer> getCustomers(){
-        ResponseEntity<Customer[]> response = restTemplate.getForEntity(customersUrl, Customer[].class);
-        List<Customer> customers = new ArrayList<>();
-        Collections.addAll(customers, Objects.requireNonNull(response.getBody()));
-        return customers;
-    }
-
-    List<Product> getProducts(){
-        ResponseEntity<Product[]> response = restTemplate.getForEntity(productUrl, Product[].class);
-        List<Product> products = new ArrayList<>();
-        Collections.addAll(products, Objects.requireNonNull(response.getBody()));
-        return products;
-    }
 
 
 
