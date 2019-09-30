@@ -1,6 +1,6 @@
 package bolo.spring.creditapplication.repository;
 
-import bolo.spring.creditapplication.api.Repository;
+import bolo.spring.creditapplication.api.CreditRepoApi;
 import bolo.spring.creditapplication.domain.Credit;
 import bolo.spring.creditapplication.domain.Customer;
 import bolo.spring.creditapplication.domain.Product;
@@ -25,12 +25,18 @@ import java.util.Objects;
 @NoArgsConstructor
 @Configuration
 @PropertySource("classpath:application.properties")
-public class CreditRepository implements Repository<Credit, Long> {
+public class CreditRepository implements CreditRepoApi {
 
-    @Value("${products.url}")
-    private String productUrl;
-    @Value("${customers.url}")
-    private String customersUrl;
+    @Value("${products.url.get}")
+    private String productUrlGet;
+    @Value("${products.url.post}")
+    private String productUrlPost;
+
+    @Value("${customers.url.get}")
+    private String customersUrlGet;
+    @Value("${customers.url.post}")
+    private String customersUrlPost;
+
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -51,7 +57,7 @@ public class CreditRepository implements Repository<Credit, Long> {
     }
 
     @Override
-    public Credit save(Credit credit) {
+    public Credit createCredit(Credit credit) {
         String query = String.format("INSERT INTO credits (name, customerId, productId) VALUES ('%s', '%d', '%d')",
                 credit.getName(), credit.getCustomerId(), credit.getProductId());
         jdbcTemplate.update(query);
@@ -60,32 +66,37 @@ public class CreditRepository implements Repository<Credit, Long> {
     }
 
     @Override
-    public List<Credit> findAll() {
+    public List<Credit> getCredits() {
         String query = "SELECT * FROM credits";
         return jdbcTemplate.query(query, new CreditRowMapper());
     }
 
+    @Override
     public Customer createCustomer(Customer customer){
         HttpEntity<Customer> request = new HttpEntity<>(customer);
-        return restTemplate.postForObject(customersUrl, request, Customer.class);
+        return restTemplate.postForObject(customersUrlPost, request, Customer.class);
     }
 
-    //assertThat(foo, notNullValue());
-    //assertThat(foo.getName(), is("bar"));
-    public Product createProduct(Product product){
-        HttpEntity<Product> request = new HttpEntity<>(product);
-        return restTemplate.postForObject(productUrl, request, Product.class);
-    }
 
-    public List<Customer> getCustomers(){
-        ResponseEntity<Customer[]> response = restTemplate.getForEntity(customersUrl, Customer[].class);
+    @Override
+    public List<Customer> getCustomers(List<Long> idList){
+        HttpEntity<List<Long>> request = new HttpEntity<>(idList);
+        ResponseEntity<Customer[]> response = restTemplate.postForEntity(customersUrlGet, request, Customer[].class);
         List<Customer> customers = new ArrayList<>();
         Collections.addAll(customers, Objects.requireNonNull(response.getBody()));
         return customers;
     }
 
-    public List<Product> getProducts(){
-        ResponseEntity<Product[]> response = restTemplate.getForEntity(productUrl, Product[].class);
+    @Override
+    public Product createProduct(Product product){
+        HttpEntity<Product> request = new HttpEntity<>(product);
+        return restTemplate.postForObject(productUrlPost, request, Product.class);
+    }
+
+    @Override
+    public List<Product> getProducts(List<Long> idList){
+        HttpEntity<List<Long>> request = new HttpEntity<>(idList);
+        ResponseEntity<Product[]> response = restTemplate.postForEntity(productUrlGet, request, Product[].class);
         List<Product> products = new ArrayList<>();
         Collections.addAll(products, Objects.requireNonNull(response.getBody()));
         return products;

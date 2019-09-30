@@ -1,28 +1,31 @@
 package pl.inteca.customer.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.*;
 import pl.inteca.customer.domain.Customer;
 import pl.inteca.customer.repository.CustomerRepository;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/customers")
+@PropertySource("classpath:application.properties")
+@RequestMapping("${server.path}")
 public class CustomerController {
 
     @Autowired
     private CustomerRepository repository;
 
-    @PostMapping
+    @PostMapping("${server.post}")
     public @ResponseBody Customer createCustomer(@RequestBody Customer customer){
-        return repository.save(customer);
+        return repository.createCustomer(customer);
     }
 
-    @GetMapping
+    @PostMapping("${server.get}")
     public @ResponseBody
-    List<Customer> getProducts() {
-        return repository.findAll();
+    List<Customer> getProducts(@RequestBody List<Long> idList) {
+        return repository.getCustomers(idList);
     }
 }

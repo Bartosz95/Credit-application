@@ -1,13 +1,12 @@
 package pl.inteca.product.repository;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import pl.inteca.product.api.Repository;
+import pl.inteca.product.api.ProductRepoApi;
 import pl.inteca.product.domain.Product;
 
 import java.sql.*;
@@ -19,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @Configuration
 @PropertySource("classpath:application.properties")
-public class ProductRepository implements Repository<Product, Long> {
+public class ProductRepository implements ProductRepoApi {
 
     // values with annotation @Value are inside file /src/main/resources/application.properties
     @Value("${database.url}")
@@ -53,7 +52,7 @@ public class ProductRepository implements Repository<Product, Long> {
 
     // Function save product in table product
     @Override
-    public Product save(Product product) {
+    public Product createProduct(Product product) {
         try (Connection connection = DriverManager.getConnection(url,user,password);
              Statement statement = connection.createStatement()) {
             // insert product into table
@@ -73,12 +72,19 @@ public class ProductRepository implements Repository<Product, Long> {
 
     // Function return all products form table products
     @Override
-    public List<Product> findAll() {
+    public List<Product> getProducts(List<Long> idList) {
+        StringBuilder query = new StringBuilder("SELECT * FROM products WHERE id IN(");
+        for(Long id : idList){
+            query.append(id);
+            query.append(",");
+        }
+        query.deleteCharAt(query.lastIndexOf(","));
+        query.append(")");
+
         List<Product> products = new ArrayList<>();
         try(Connection connection = DriverManager.getConnection(url,user,password);
             Statement statement = connection.createStatement()) {
-            String query = "SELECT * FROM products";
-            ResultSet result = statement.executeQuery(query);
+            ResultSet result = statement.executeQuery(query.toString());
             while (result.next()) {
                 products.add(Product.builder() // create product by Builder and add to list
                         .id(result.getLong("id"))

@@ -1,30 +1,30 @@
 package pl.inteca.product.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.*;
 import pl.inteca.product.domain.Product;
 import pl.inteca.product.repository.ProductRepository;
-
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/products")
+@PropertySource("classpath:application.properties")
+@RequestMapping("${server.path}")
 public class ProductController {
 
     @Autowired
     private ProductRepository repository;
 
-    @PostMapping
+    @PostMapping("${server.post}")
     public @ResponseBody
     Product createProduct(@RequestBody Product product) {
-        return repository.save(product);
+        return repository.createProduct(product);
     }
 
-    @GetMapping
+    @PostMapping("${server.get}")
     public @ResponseBody
-    List<Product> getProducts() {
-       return repository.findAll();
+    List<Product> getProducts(@RequestBody List<Long> idList) {
+       return repository.getProducts(idList);
     }
 
 }

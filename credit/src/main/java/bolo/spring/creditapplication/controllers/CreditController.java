@@ -47,22 +47,31 @@ public class CreditController {
         Credit credit = request.getCredit();
         credit.setCustomerId(customer.getId());
         credit.setProductId(product.getId());
-        return repository.save(credit).getId();
+        return repository.createCredit(credit).getId();
     }
 
     @GetMapping("${server.get}")
     @JsonView(Views.Public.class) // This fcn using mapper to delete variable without annotation @JsonView(Views.Public.class)
-    public
+    public @ResponseBody
     List<CreditMapper> getCredits() throws IOException {
 
+        // Get all credit from database
+        List<Credit> credits = repository.getCredits();
+
+        // Get all id from credits
+        List<Long> idCustomerList = new ArrayList<>();
+        List<Long> idProductList = new ArrayList<>();
+        for(Credit credit: credits){
+            idCustomerList.add(credit.getCustomerId());
+            idProductList.add(credit.getProductId());
+        }
+
         // Get all customers form database
-        List<Customer> customers = repository.getCustomers();
+        List<Customer> customers = repository.getCustomers(idCustomerList);
 
         // Get all product form database
-        List<Product> products = repository.getProducts();
+        List<Product> products = repository.getProducts(idProductList);
 
-        // Get all credit form database
-        List<Credit> credits = repository.findAll();
 
         // Create request list
         List<CreditMapper> response = new ArrayList<>();

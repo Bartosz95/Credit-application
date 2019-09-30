@@ -1,23 +1,20 @@
 package pl.inteca.customer.repository;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
-import pl.inteca.customer.api.Repository;
+import pl.inteca.customer.api.CustomerRepoApi;
 import pl.inteca.customer.domain.Customer;
-import java.sql.SQLException;
 import java.util.List;
 
 @Configuration
-public class CustomerRepository implements Repository<Customer, Long> {
+public class CustomerRepository implements CustomerRepoApi {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public void createTable() throws ClassNotFoundException, SQLException {
+    public void createTable() {
         String query = "CREATE TABLE IF NOT EXISTS customers (" +
                 "id BIGINT NOT NULL AUTO_INCREMENT," +
                 "firstName VARCHAR(255)," +
@@ -29,8 +26,7 @@ public class CustomerRepository implements Repository<Customer, Long> {
     }
 
     @Override
-    public Customer save(Customer customer) {
-        System.out.println(customer.toString());
+    public Customer createCustomer(Customer customer) {
         String query = String.format("INSERT INTO customers (firstName, lastName, personalId)" +
                 "VALUES ('%s', '%s', '%d')", customer.getFirstName(), customer.getLastName(), customer.getPersonalId());
         jdbcTemplate.update(query);
@@ -39,8 +35,15 @@ public class CustomerRepository implements Repository<Customer, Long> {
     }
 
     @Override
-    public List<Customer> findAll() {
-        String query = "SELECT * FROM customers";
-        return jdbcTemplate.query(query, new CustomerRowMapper());
+    public List<Customer> getCustomers(List<Long> idList) {
+        // Loop for query like "SELECT * FROM customers WHERE id IN(1,2)"
+        StringBuilder query = new StringBuilder("SELECT * FROM customers WHERE id IN(");
+        for(Long id : idList){
+            query.append(id);
+            query.append(",");
+        }
+        query.deleteCharAt(query.lastIndexOf(","));
+        query.append(")");
+        return jdbcTemplate.query(query.toString(), new CustomerRowMapper());
     }
 }
