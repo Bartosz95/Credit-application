@@ -1,7 +1,6 @@
 package bolo.spring.creditapplication.repository;
 
 import bolo.spring.creditapplication.api.Repository;
-import bolo.spring.creditapplication.controllers.CreditRequest;
 import bolo.spring.creditapplication.domain.Credit;
 import bolo.spring.creditapplication.domain.Customer;
 import bolo.spring.creditapplication.domain.Product;
