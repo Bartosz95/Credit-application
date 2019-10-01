@@ -11,18 +11,14 @@
 	<groupId>pl.inteca</groupId>
 	<artifactId>product</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Product</name>
+	<name>product</name>
 	<description>Product module for recruitment</description>
 
 	<properties>
-		<java.version>1.8</java.version>
+		<java.version>11</java.version>
 	</properties>
 
 	<dependencies>
-		<!--<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jdbc</artifactId>
-		</dependency>-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -43,6 +39,7 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -54,7 +51,41 @@
 					<finalName>product</finalName>
 				</configuration>
 			</plugin>
+
+			<plugin>
+				<groupId>io.fabric8</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>0.31.0</version>
+				<executions>
+					<execution>
+						<id>${project.name}</id>
+						<goals>
+							<goal>build</goal>
+							<goal>start</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<images>
+						<image>
+							<name>${project.name}</name>
+							<build>
+								<dockerFile>${project.basedir}/Dockerfile</dockerFile >
+							</build>
+							<run>
+								<ports>
+									<port>8091:8091</port>
+								</ports>
+								<links>
+									<link>mysql-standalone</link>
+								</links>
+							</run>
+						</image>
+					</images>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
+
 
 </project>
