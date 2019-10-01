@@ -1,8 +1,5 @@
-package bolo.spring.creditapplication.configurations;
+package pl.inteca.credit.configurations;
 
-import bolo.spring.creditapplication.controllers.Views;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

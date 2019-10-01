@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.1.8.RELEASE</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+
+	<groupId>pl.inteca</groupId>
+	<artifactId>credit-application</artifactId>
+	<packaging>pom</packaging>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>credit-application</name>
+	<description>Parent for all module</description>
+
+	<modules>
+		<module>database</module>
+		<module>product</module>
+		<module>customer</module>
+		<module>credit</module>
+    </modules>
+
+	<properties>
+		<java.version>11</java.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<finalName>${project.name}</finalName>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>io.fabric8</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>0.31.0</version>
+				<executions>
+					<execution>
+						<id>${project.name}</id>
+						<goals>
+							<goal>build</goal>
+							<goal>start</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<images>
+						<image>
+							<alias>database</alias>
+							<name>mysql</name>
+							<run>
+								<ports>
+									<port>3306:3306</port>
+								</ports>
+								<env>
+									<MYSQL_DATABASE>database</MYSQL_DATABASE>
+									<MYSQL_ROOT_PASSWORD>password</MYSQL_ROOT_PASSWORD>
+									<MYSQL_MYSQL_USER>user</MYSQL_MYSQL_USER>
+									<MYSQL_MYSQL_PASSWORD>password</MYSQL_MYSQL_PASSWORD>
+								</env>
+							</run>
+						</image>
+						<image>
+							<name>product</name>
+							<alias>product</alias>
+							<build>
+								<dockerFile>${project.basedir}/product/Dockerfile</dockerFile >
+							</build>
+							<run>
+								<ports>
+									<port>8091:8091</port>
+								</ports>
+								<links>
+									<link>mysql:database-server</link>
+								</links>
+							</run>
+						</image>
+					</images>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

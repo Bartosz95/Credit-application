@@ -1,9 +1,5 @@
-package bolo.spring.creditapplication.repository;
+package pl.inteca.credit.repository;
 
-import bolo.spring.creditapplication.api.CreditRepoApi;
-import bolo.spring.creditapplication.domain.Credit;
-import bolo.spring.creditapplication.domain.Customer;
-import bolo.spring.creditapplication.domain.Product;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +10,11 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.client.RestTemplate;
+import pl.inteca.credit.api.CreditRepoApi;
+import pl.inteca.credit.domain.Credit;
+import pl.inteca.credit.domain.Customer;
+import pl.inteca.credit.domain.Product;
 
-import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -45,8 +44,7 @@ public class CreditRepository implements CreditRepoApi {
     private RestTemplate restTemplate;
 
     // Function createTable() create table "product" in database
-    @Autowired
-    public void createTable() throws SQLException {
+    public void createTable() {
         String query = "CREATE TABLE IF NOT EXISTS credits (" +
                 "id BIGINT NOT NULL AUTO_INCREMENT," +
                 "name VARCHAR(255)," +

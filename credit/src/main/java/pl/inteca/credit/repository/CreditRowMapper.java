@@ -1,6 +1,6 @@
-package bolo.spring.creditapplication.repository;
+package pl.inteca.credit.repository;
 
-import bolo.spring.creditapplication.domain.Credit;
+import pl.inteca.credit.domain.Credit;
 import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;

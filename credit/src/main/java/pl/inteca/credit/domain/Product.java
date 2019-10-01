@@ -1,13 +1,12 @@
-package bolo.spring.creditapplication.domain;
+package pl.inteca.credit.domain;
 
-import bolo.spring.creditapplication.controllers.Views;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.inteca.credit.controllers.Views;
 
 @Data
 @Builder

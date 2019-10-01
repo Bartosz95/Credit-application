@@ -1,6 +1,6 @@
-package bolo.spring.creditapplication.api;
+package pl.inteca.credit.api;
 
-import bolo.spring.creditapplication.domain.Customer;
+import pl.inteca.credit.domain.Customer;
 
 import java.util.List;
 

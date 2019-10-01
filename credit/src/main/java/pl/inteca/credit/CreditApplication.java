@@ -1,4 +1,4 @@
-package bolo.spring.creditapplication;
+package pl.inteca.credit;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

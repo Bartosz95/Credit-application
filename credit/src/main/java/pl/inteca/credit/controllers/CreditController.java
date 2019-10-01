@@ -1,30 +1,17 @@
-package bolo.spring.creditapplication.controllers;
+package pl.inteca.credit.controllers;
 
-import bolo.spring.creditapplication.domain.Credit;
-import bolo.spring.creditapplication.domain.Customer;
-import bolo.spring.creditapplication.domain.Product;
-import bolo.spring.creditapplication.repository.CreditRepository;
-import bolo.spring.creditapplication.repository.CreditRowMapper;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
+import pl.inteca.credit.domain.Credit;
+import pl.inteca.credit.domain.Customer;
+import pl.inteca.credit.domain.Product;
+import pl.inteca.credit.repository.CreditRepository;
 
-import java.io.DataOutput;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @PropertySource("classpath:application.properties")
@@ -53,8 +40,7 @@ public class CreditController {
     @GetMapping("${server.get}")
     @JsonView(Views.Public.class) // This fcn using mapper to delete variable without annotation @JsonView(Views.Public.class)
     public @ResponseBody
-    List<CreditMapper> getCredits() throws IOException {
-
+    List<CreditMapper> getCredits() {
         // Get all credit from database
         List<Credit> credits = repository.getCredits();
 

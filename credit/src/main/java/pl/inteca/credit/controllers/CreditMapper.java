@@ -1,8 +1,8 @@
-package bolo.spring.creditapplication.controllers;
+package pl.inteca.credit.controllers;
 
-import bolo.spring.creditapplication.domain.Credit;
-import bolo.spring.creditapplication.domain.Customer;
-import bolo.spring.creditapplication.domain.Product;
+import pl.inteca.credit.domain.Credit;
+import pl.inteca.credit.domain.Customer;
+import pl.inteca.credit.domain.Product;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
