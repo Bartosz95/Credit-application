@@ -30,16 +30,27 @@ public class ProductRepository implements ProductRepoApi {
     @Value("${database.driver}")
     private String driver;
 
-    @Autowired // apply driver for mysql database
+    /*
+     * Function apply driver for mysql.
+     * Is possible change driver in resource/application.properties
+     * IN: -
+     * OUT: -
+     */
+    @Autowired
     public void applyDriver() {
         try {
             Class.forName(driver);
         } catch (ClassNotFoundException e){
-            System.out.println(e.getMessage());
+            System.out.println(String.format("Error with driver: ", e.getMessage()));
         }
     }
 
-    // Function createTable() create table "product" in database
+    /*
+     * Function createTable() create table "product" in database
+     * table product have (id, name, value)
+     * IN: -
+     * OUT -
+     */
     @Autowired
     public void createTable() {
         String query = "CREATE TABLE IF NOT EXISTS products (" +
@@ -47,25 +58,19 @@ public class ProductRepository implements ProductRepoApi {
                 "name VARCHAR(255)," +
                 "value BIGINT," +
                 "PRIMARY KEY (id))";
-        // Wait 10 second for start database
-        try {
-            for(int i = 10; i>0; i--){
-                System.out.println(String.format("wait for database: %d second", i));
-                Thread.sleep(1000);
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         try(Connection connection = DriverManager.getConnection(url,user,password);
             Statement statement = connection.createStatement()){
             statement.executeUpdate(query);
-            System.out.println("Good connect to database");
         } catch (SQLException e){
             System.out.println(String.format("Database server not response. Error: \n %s", e.getMessage()));
         }
     }
 
-    // Function save product in table product
+    /*
+     * Function save product in credit-db.product table
+     * IN: Product.class without id, database connection
+     * OUT: The same Product.class with id
+     */
     @Override
     public Product createProduct(Product product) {
         try (Connection connection = DriverManager.getConnection(url,user,password);
@@ -85,9 +90,17 @@ public class ProductRepository implements ProductRepoApi {
         return product;
     }
 
-    // Function return all products form table products
+    /*
+     * Function return all products form table products
+     * It send request to database looks like:
+     * SELECT * FROM products WHERE id IN(1,2,3,4)
+     * and database send response like result list.
+     * IN: List of id in long value, database connection
+     * OUT: List of Product.class
+     */
     @Override
     public List<Product> getProducts(List<Long> idList) {
+        // Prepare query string
         StringBuilder query = new StringBuilder("SELECT * FROM products WHERE id IN(");
         for(Long id : idList){
             query.append(id);
@@ -97,6 +110,7 @@ public class ProductRepository implements ProductRepoApi {
         query.append(")");
 
         List<Product> products = new ArrayList<>();
+        // Send query to database
         try(Connection connection = DriverManager.getConnection(url,user,password);
             Statement statement = connection.createStatement()) {
             ResultSet result = statement.executeQuery(query.toString());

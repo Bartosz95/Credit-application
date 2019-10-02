@@ -26,6 +26,7 @@ public class CreditController {
     @Autowired
     private ObjectMapper mapper;
 
+
     @PostMapping("${server.post}")
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody

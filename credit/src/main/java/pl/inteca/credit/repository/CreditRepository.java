@@ -50,34 +50,16 @@ public class CreditRepository implements CreditRepoApi, CustomerRepoApi, Product
     @Autowired
     private RestTemplate restTemplate;
 
-    // Function create table "product" in database but before wait 10 second for database
+    // Function create table "product" in database
     @Autowired
-    public void createTable() {
-        // create query
+    public void createTable() throws InterruptedException {
         String query = "CREATE TABLE IF NOT EXISTS credits (" +
                 "id BIGINT NOT NULL AUTO_INCREMENT," +
                 "name VARCHAR(255)," +
                 "customerId BIGINT NOT NULL," +
                 "productId BIGINT NOT NULL," +
                 "PRIMARY KEY (id))";
-
-        // wait 10 second
-        try {
-            for(int i = 10; i>0; i--){
-                System.out.println(String.format("wait for database: %d second", i));
-                Thread.sleep(1000);
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        // create a table and check connection
-        try {
-            jdbcTemplate.execute(query);
-            System.out.println("Good connect to database");
-        } catch (Exception e){
-            System.out.println(String.format("Database server not response. Error: \n %s", e.getMessage()));
-        }
+        jdbcTemplate.execute(query);
     }
 
     // create credit in database and
