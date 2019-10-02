@@ -21,8 +21,20 @@ public class CustomerRepository implements CustomerRepoApi {
                 "lastName VARCHAR(255)," +
                 "personalId BIGINT," +
                 "PRIMARY KEY (id))";
-        jdbcTemplate.execute(query);
-
+        try {
+            for(int i = 10; i>0; i--){
+                System.out.println(String.format("wait for database: %d second", i));
+                Thread.sleep(1000);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        try {
+            jdbcTemplate.execute(query);
+            System.out.println("Good connect to database");
+        } catch (Exception e){
+            System.out.println(String.format("Database server not response. Error: \n %s", e.getMessage()));
+        }
     }
 
     @Override

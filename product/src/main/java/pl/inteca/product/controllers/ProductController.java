@@ -13,18 +13,8 @@ import java.util.List;
 @RequestMapping("${server.path}")
 public class ProductController {
 
-    @Value("${spring.datasource.url}")
-    private String url;
-
     @Autowired
     private ProductRepository repository;
-
-    @GetMapping
-    public @ResponseBody
-    String fcn(){
-        return url;
-    }
-
 
     @PostMapping("${server.post}")
     public @ResponseBody

@@ -29,40 +29,6 @@
 					<finalName>${project.name}</finalName>
 				</configuration>
 			</plugin>
-
-			<plugin>
-				<groupId>io.fabric8</groupId>
-				<artifactId>docker-maven-plugin</artifactId>
-				<version>0.31.0</version>
-				<executions>
-					<execution>
-						<id>${project.name}</id>
-						<goals>
-							<goal>build</goal>
-							<goal>start</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<images>
-						<image>
-							<name>${project.name}</name>
-							<alias>${project.name}</alias>
-							<build>
-								<dockerFile>${project.basedir}/Dockerfile</dockerFile >
-							</build>
-							<run>
-								<ports>
-									<port>8092:8092</port>
-								</ports>
-								<links>
-									<link>mysql-1:database-server</link>
-								</links>
-							</run>
-						</image>
-					</images>
-				</configuration>
-			</plugin>
 		</plugins>
 	</build>
 

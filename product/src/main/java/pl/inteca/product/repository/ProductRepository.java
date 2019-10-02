@@ -21,7 +21,7 @@ import java.util.List;
 public class ProductRepository implements ProductRepoApi {
 
     // values with annotation @Value are inside file /src/main/resources/application.properties
-    @Value("${spring.datasource.url}")
+    @Value("${database.url}")
     private String url;
     @Value("${database.user}")
     private String user;
@@ -37,7 +37,6 @@ public class ProductRepository implements ProductRepoApi {
         } catch (ClassNotFoundException e){
             System.out.println(e.getMessage());
         }
-
     }
 
     // Function createTable() create table "product" in database
@@ -48,10 +47,10 @@ public class ProductRepository implements ProductRepoApi {
                 "name VARCHAR(255)," +
                 "value BIGINT," +
                 "PRIMARY KEY (id))";
-        System.out.println("Wait for database");
+        // Wait 10 second for start database
         try {
             for(int i = 10; i>0; i--){
-                System.out.println(String.format("Wait %d second", i));
+                System.out.println(String.format("wait for database: %d second", i));
                 Thread.sleep(1000);
             }
         } catch (InterruptedException e) {
@@ -62,7 +61,6 @@ public class ProductRepository implements ProductRepoApi {
             statement.executeUpdate(query);
             System.out.println("Good connect to database");
         } catch (SQLException e){
-
             System.out.println(String.format("Database server not response. Error: \n %s", e.getMessage()));
         }
     }

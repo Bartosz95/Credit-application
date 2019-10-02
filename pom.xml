@@ -19,8 +19,8 @@
 
 	<modules>
 		<module>product</module>
-<!--		<module>customer</module>-->
-<!--		<module>credit</module>-->
+		<module>customer</module>
+		<module>credit</module>
     </modules>
 
 	<properties>
@@ -59,6 +59,7 @@
 
 				<configuration>
 					<images>
+					<!--			Image form DATABASE			-->
 						<image>
 							<alias>database</alias>
 							<name>mysql</name>
@@ -69,11 +70,12 @@
 								<env>
 									<MYSQL_DATABASE>credit-db</MYSQL_DATABASE>
 									<MYSQL_ROOT_PASSWORD>password</MYSQL_ROOT_PASSWORD>
-									<MYSQL_MYSQL_USER>user</MYSQL_MYSQL_USER>
-									<MYSQL_MYSQL_PASSWORD>password</MYSQL_MYSQL_PASSWORD>
+									<MYSQL_USER>user</MYSQL_USER>
+									<MYSQL_PASSWORD>password</MYSQL_PASSWORD>
 								</env>
 							</run>
 						</image>
+						<!--			Image from PRODUCT			-->
 						<image>
 							<name>product</name>
 							<alias>product</alias>
@@ -81,14 +83,45 @@
 								<dockerFile>${project.basedir}/product/Dockerfile</dockerFile>
 							</build>
 							<run>
-								<wait>
-									<time>1000</time>
-								</wait>
 								<ports>
 									<port>8091:8091</port>
 								</ports>
 								<links>
 									<link>mysql:database-server</link>
+								</links>
+							</run>
+						</image>
+						<!--			Image from CUSTOMER			-->
+						<image>
+							<name>customer</name>
+							<alias>customer</alias>
+							<build>
+								<dockerFile>${project.basedir}/customer/Dockerfile</dockerFile>
+							</build>
+							<run>
+								<ports>
+									<port>8092:8092</port>
+								</ports>
+								<links>
+									<link>mysql:database-server</link>
+								</links>
+							</run>
+						</image>
+						<!--			Image from MAIN CREDIT APPLICATION			-->
+						<image>
+							<name>credit</name>
+							<alias>credit</alias>
+							<build>
+								<dockerFile>${project.basedir}/credit/Dockerfile</dockerFile >
+							</build>
+							<run>
+								<ports>
+									<port>8090:8090</port>
+								</ports>
+								<links>
+									<link>mysql:database-server</link>
+									<link>product:product-server</link>
+									<link>customer:customer-server</link>
 								</links>
 							</run>
 						</image>

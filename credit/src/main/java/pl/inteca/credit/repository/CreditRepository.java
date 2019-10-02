@@ -44,6 +44,7 @@ public class CreditRepository implements CreditRepoApi {
     private RestTemplate restTemplate;
 
     // Function createTable() create table "product" in database
+    @Autowired
     public void createTable() {
         String query = "CREATE TABLE IF NOT EXISTS credits (" +
                 "id BIGINT NOT NULL AUTO_INCREMENT," +
@@ -51,7 +52,20 @@ public class CreditRepository implements CreditRepoApi {
                 "customerId BIGINT NOT NULL," +
                 "productId BIGINT NOT NULL," +
                 "PRIMARY KEY (id))";
-        jdbcTemplate.execute(query);
+        try {
+            for(int i = 10; i>0; i--){
+                System.out.println(String.format("wait for database: %d second", i));
+                Thread.sleep(1000);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        try {
+            jdbcTemplate.execute(query);
+            System.out.println("Good connect to database");
+        } catch (Exception e){
+            System.out.println(String.format("Database server not response. Error: \n %s", e.getMessage()));
+        }
     }
 
     @Override
