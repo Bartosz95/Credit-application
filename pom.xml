@@ -63,6 +63,9 @@
 						<image>
 							<alias>database</alias>
 							<name>mysql</name>
+							<build>
+								<from>mysql</from>
+							</build>
 							<run>
 								<ports>
 									<port>3306:3306</port>
