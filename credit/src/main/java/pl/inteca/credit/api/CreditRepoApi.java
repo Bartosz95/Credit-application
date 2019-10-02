@@ -4,7 +4,7 @@ import pl.inteca.credit.domain.Credit;
 
 import java.util.List;
 
-public interface CreditRepoApi extends CustomerRepoApi, ProductRepoApi {
+public interface CreditRepoApi {
 
     Credit createCredit(Credit credit);
     List<Credit> getCredits();

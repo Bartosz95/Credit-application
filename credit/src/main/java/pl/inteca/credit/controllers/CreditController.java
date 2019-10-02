@@ -14,6 +14,7 @@ import pl.inteca.credit.repository.CreditRepository;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @RestController
 @PropertySource("classpath:application.properties")
 @RequestMapping("${server.path}")
@@ -30,12 +31,17 @@ public class CreditController {
     public @ResponseBody
     long createCredit(@RequestBody CreditMapper request){
 
+        // create and save information about customer and product in database
+        // function return Json object with ID
         Customer customer = repository.createCustomer(request.getCustomer());
         Product product = repository.createProduct(request.getProduct());
 
+        // next to set information included id
         Credit credit = request.getCredit();
         credit.setCustomerId(customer.getId());
         credit.setProductId(product.getId());
+
+        // create new user and return it id
         return repository.createCredit(credit).getId();
     }
 
@@ -44,10 +50,11 @@ public class CreditController {
     @JsonView(Views.Public.class) // This fcn using mapper to delete variable without annotation @JsonView(Views.Public.class)
     public @ResponseBody
     List<CreditMapper> getCredits() {
+
         // Get all credit from database
         List<Credit> credits = repository.getCredits();
 
-        // Get all id from credits
+        // Get necessary id from credits
         List<Long> idCustomerList = new ArrayList<>();
         List<Long> idProductList = new ArrayList<>();
         for(Credit credit: credits){
@@ -55,35 +62,27 @@ public class CreditController {
             idProductList.add(credit.getProductId());
         }
 
-        // Get all customers form database
+        // Get customers and product lists form database
         List<Customer> customers = repository.getCustomers(idCustomerList);
-
-        // Get all product form database
         List<Product> products = repository.getProducts(idProductList);
-
 
         // Create request list
         List<CreditMapper> response = new ArrayList<>();
-        //List<String[]> response = new ArrayList<>();
-        String customerResponse;
-        String productResponse;
-        String creditResponse;
 
         for(Credit credit : credits){
 
-            // Find customer by credit.customerId
+            // Connect customers and products with credits by id
             Customer customer = customers.stream()
                     .filter(customer1 -> credit.getCustomerId() == customer1.getId())
                     .findFirst()
                     .orElse(null);
 
-            // Find product by credit.customerId
             Product product = products.stream()
                     .filter(product1 -> credit.getProductId() == product1.getId())
                     .findFirst()
                     .orElse(null);
 
-            // Add (customer, product, credit) info to response
+            // Add (customer, product, credit) to response list
             response.add(CreditMapper.builder()
             .customer(customer)
             .product(product)

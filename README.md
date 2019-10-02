@@ -1,8 +1,9 @@
 # CREDIT APPLICATION
 ## Necessary tools:
-*  
+* [Maven](https://maven.apache.org/)
+* [Docker](https://www.docker.com/)
 
-## Installation 
+## Installation process:
 ### For installation run command below
 [Download](https://github.com/Bartosz95/credit-application/archive/master.zip) and unzip or clone repository from github:
 ```shell script

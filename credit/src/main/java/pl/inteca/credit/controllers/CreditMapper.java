@@ -13,6 +13,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+/*
+    Mapper structuring all element to clearly response
+ */
 public class CreditMapper {
     @JsonView(Views.Public.class)
     Customer customer;

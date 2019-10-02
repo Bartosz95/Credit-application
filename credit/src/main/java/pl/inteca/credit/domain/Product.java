@@ -16,9 +16,11 @@ import pl.inteca.credit.controllers.Views;
 public class Product {
 
     long id;
-    @JsonView(Views.Public.class)
+    @JsonView(Views.Public.class) // variable with this annotation are added to response
+
     String name;
-    @JsonView(Views.Public.class)
+    @JsonView(Views.Public.class) // variable with this annotation are added to response
+
     long value;
 }
 

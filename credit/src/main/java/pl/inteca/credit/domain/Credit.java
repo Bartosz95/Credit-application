@@ -16,7 +16,7 @@ public class Credit {
 
     long id;
 
-    @JsonView(Views.Public.class)
+    @JsonView(Views.Public.class) // variable with this annotation are added to response
     String name;
 
 

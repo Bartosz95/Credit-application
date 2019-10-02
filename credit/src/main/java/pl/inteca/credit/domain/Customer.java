@@ -17,12 +17,12 @@ public class Customer {
 
     long id;
 
-    @JsonView(Views.Public.class)
+    @JsonView(Views.Public.class) // variable with this annotation are added to response
     String firstName;
 
-    @JsonView(Views.Public.class)
+    @JsonView(Views.Public.class) // variable with this annotation are added to response
     String lastName;
 
-    @JsonView(Views.Public.class)
+    @JsonView(Views.Public.class) // variable with this annotation are added to response
     long personalId;
 }

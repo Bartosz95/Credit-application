@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.client.RestTemplate;
 import pl.inteca.credit.api.CreditRepoApi;
+import pl.inteca.credit.api.CustomerRepoApi;
+import pl.inteca.credit.api.ProductRepoApi;
 import pl.inteca.credit.domain.Credit;
 import pl.inteca.credit.domain.Customer;
 import pl.inteca.credit.domain.Product;
@@ -20,11 +22,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+/*
+    It communicate with 'customer' and 'product' by REST service.
+    Implements all interface because it deliver all necessary
+    information about Credit Customer and Product to controller.
+ */
 @Data
 @NoArgsConstructor
 @Configuration
 @PropertySource("classpath:application.properties")
-public class CreditRepository implements CreditRepoApi {
+public class CreditRepository implements CreditRepoApi, CustomerRepoApi, ProductRepoApi {
 
     @Value("${products.url.get}")
     private String productUrlGet;
@@ -43,15 +50,18 @@ public class CreditRepository implements CreditRepoApi {
     @Autowired
     private RestTemplate restTemplate;
 
-    // Function createTable() create table "product" in database
+    // Function create table "product" in database but before wait 10 second for database
     @Autowired
     public void createTable() {
+        // create query
         String query = "CREATE TABLE IF NOT EXISTS credits (" +
                 "id BIGINT NOT NULL AUTO_INCREMENT," +
                 "name VARCHAR(255)," +
                 "customerId BIGINT NOT NULL," +
                 "productId BIGINT NOT NULL," +
                 "PRIMARY KEY (id))";
+
+        // wait 10 second
         try {
             for(int i = 10; i>0; i--){
                 System.out.println(String.format("wait for database: %d second", i));
@@ -60,6 +70,8 @@ public class CreditRepository implements CreditRepoApi {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+        // create a table and check connection
         try {
             jdbcTemplate.execute(query);
             System.out.println("Good connect to database");
@@ -68,6 +80,7 @@ public class CreditRepository implements CreditRepoApi {
         }
     }
 
+    // create credit in database and
     @Override
     public Credit createCredit(Credit credit) {
         String query = String.format("INSERT INTO credits (name, customerId, productId) VALUES ('%s', '%d', '%d')",
