@@ -2,6 +2,7 @@ package pl.inteca.customer.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import pl.inteca.customer.domain.Customer;
 import pl.inteca.customer.repository.CustomerRepository;
@@ -19,11 +20,13 @@ public class CustomerController {
     private CustomerRepository repository;
 
     @PostMapping("${server.post}")
+    @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody Customer createCustomer(@RequestBody Customer customer){
         return repository.createCustomer(customer);
     }
 
     @PostMapping("${server.get}")
+    @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
     List<Customer> getProducts(@RequestBody List<Long> idList) {
         return repository.getCustomers(idList);

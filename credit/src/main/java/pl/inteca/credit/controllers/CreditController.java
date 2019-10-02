@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import pl.inteca.credit.domain.Credit;
 import pl.inteca.credit.domain.Customer;
@@ -25,6 +26,7 @@ public class CreditController {
     private ObjectMapper mapper;
 
     @PostMapping("${server.post}")
+    @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody
     long createCredit(@RequestBody CreditMapper request){
 
@@ -38,6 +40,7 @@ public class CreditController {
     }
 
     @GetMapping("${server.get}")
+    @ResponseStatus(HttpStatus.CREATED)
     @JsonView(Views.Public.class) // This fcn using mapper to delete variable without annotation @JsonView(Views.Public.class)
     public @ResponseBody
     List<CreditMapper> getCredits() {

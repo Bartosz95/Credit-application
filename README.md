@@ -1,7 +1,10 @@
 # CREDIT APPLICATION
+## Necessary tools:
+*  
+
 ## Installation 
 ### For installation run command below
-Clone repository from github:
+[Download](https://github.com/Bartosz95/credit-application/archive/master.zip) and unzip or clone repository from github:
 ```shell script
 git clone https://github.com/Bartosz95/credit-application.git
 ```
@@ -15,7 +18,7 @@ mvn clean package
 ```
 Build docker images and run containers: 
 ```shell script
- mvn clean package docker:build docker:run
+mvn clean package docker:build docker:run
 ```
 If it's throw some error, try to clean
 ```shell script
