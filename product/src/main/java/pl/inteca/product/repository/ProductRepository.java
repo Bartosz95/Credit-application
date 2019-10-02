@@ -15,13 +15,13 @@ import java.util.List;
 
 
 @Data
-@NoArgsConstructor
 @Configuration
+@NoArgsConstructor
 @PropertySource("classpath:application.properties")
 public class ProductRepository implements ProductRepoApi {
 
     // values with annotation @Value are inside file /src/main/resources/application.properties
-    @Value("${database.url}")
+    @Value("${spring.datasource.url}")
     private String url;
     @Value("${database.user}")
     private String user;
@@ -31,23 +31,40 @@ public class ProductRepository implements ProductRepoApi {
     private String driver;
 
     @Autowired // apply driver for mysql database
-    public void applyDriver() throws ClassNotFoundException {
-        Class.forName(driver);
+    public void applyDriver() {
+        try {
+            Class.forName(driver);
+        } catch (ClassNotFoundException e){
+            System.out.println(e.getMessage());
+        }
+
     }
 
     // Function createTable() create table "product" in database
     @Autowired
-    public void createTable() throws SQLException {
-            String query = "CREATE TABLE IF NOT EXISTS products (" +
-                    "id BIGINT NOT NULL AUTO_INCREMENT," +
-                    "name VARCHAR(255)," +
-                    "value BIGINT," +
-                    "PRIMARY KEY (id))";
-            Connection connection = DriverManager.getConnection(url,user,password);
-            Statement statement = connection.createStatement();
+    public void createTable() {
+        String query = "CREATE TABLE IF NOT EXISTS products (" +
+                "id BIGINT NOT NULL AUTO_INCREMENT," +
+                "name VARCHAR(255)," +
+                "value BIGINT," +
+                "PRIMARY KEY (id))";
+        System.out.println("Wait for database");
+        try {
+            for(int i = 10; i>0; i--){
+                System.out.println(String.format("Wait %d second", i));
+                Thread.sleep(1000);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        try(Connection connection = DriverManager.getConnection(url,user,password);
+            Statement statement = connection.createStatement()){
             statement.executeUpdate(query);
-            statement.close();
-            connection.close();
+            System.out.println("Good connect to database");
+        } catch (SQLException e){
+
+            System.out.println(String.format("Database server not response. Error: \n %s", e.getMessage()));
+        }
     }
 
     // Function save product in table product
