@@ -17,6 +17,11 @@ public class ProductController {
     @Autowired
     private ProductRepository repository;
 
+    /*
+     * Mapping service CreateProducts
+     * IN: JSON Product object without id
+     * OUT JSON Product object with id
+     */
     @PostMapping("${server.post}")
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody
@@ -24,6 +29,11 @@ public class ProductController {
         return repository.createProduct(product);
     }
 
+    /*
+     * Mapping service GetProduct
+     * IN:  JSON List id of needed object
+     * OUT: JSON List of Product object
+     */
     @PostMapping("${server.get}")
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody

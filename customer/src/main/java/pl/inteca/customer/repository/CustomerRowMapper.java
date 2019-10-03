@@ -6,13 +6,14 @@ import pl.inteca.customer.domain.Customer;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-/*
- * Customer mapper is a function which convert the row into an object via row mapper
- * IN: Result set from database and number of row
- * OUT Customer object with set all value
- */
+
 public class CustomerRowMapper implements RowMapper<Customer> {
 
+    /*
+     * Customer mapper is a function which convert the row into an object via row mapper
+     * IN: Result set from database and number of row
+     * OUT Customer object with set all value
+     */
     @Override
     public Customer mapRow(ResultSet rs, int rowNum) throws SQLException {
 

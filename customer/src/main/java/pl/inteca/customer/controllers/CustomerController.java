@@ -19,12 +19,22 @@ public class CustomerController {
     @Autowired
     private CustomerRepository repository;
 
+    /*
+     * Mapping service CreateCustomer
+     * IN: JSON Customer object without id
+     * OUT JSON Customer object with id
+     */
     @PostMapping("${server.post}")
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody Customer createCustomer(@RequestBody Customer customer){
         return repository.createCustomer(customer);
     }
 
+    /*
+     * Mapping service GetCustomer
+     * IN:  JSON List id of needed object
+     * OUT: JSON List of Customer object
+     */
     @PostMapping("${server.get}")
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody

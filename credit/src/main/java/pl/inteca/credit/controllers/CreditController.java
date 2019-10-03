@@ -27,27 +27,49 @@ public class CreditController {
     private ObjectMapper mapper;
 
 
+    /*
+     * Mapping POST service named CreateCredit It create and save information
+     * about customer and product in database function return id
+     * Long description about insert method in README.md
+     * { "customer" : {
+	 *      "firstName" : "Jan",
+	 *      "lastName" : "Kowalski",
+	 *      "personalId" : 1234567890 },
+	 *   "product" : {
+	 *      "name" : "motgage credit",
+	 *      "value" : 2000 },
+	 *    "credit" : {
+	 *      "name": "mortgage" } }
+     * IN: JSON Object looks like  object without id
+     * OUT id
+     */
     @PostMapping("${server.post}")
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody
     long createCredit(@RequestBody CreditMapper request){
 
-        // create and save information about customer and product in database
-        // function return Json object with ID
+        // Save customer and product in database
+        // This function return object with id
         Customer customer = repository.createCustomer(request.getCustomer());
         Product product = repository.createProduct(request.getProduct());
 
-        // next to set information included id
+        // Create credit and set customer and product id
         Credit credit = request.getCredit();
         credit.setCustomerId(customer.getId());
         credit.setProductId(product.getId());
 
-        // create new user and return it id
+        // create new credit and return it id
         return repository.createCredit(credit).getId();
     }
 
+    /*
+     * Mapping GET service named GetCredit
+     * This function return list of all credit
+     * IN: -
+     * OUT: List of credit in JSON
+     */
     @GetMapping("${server.get}")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     @JsonView(Views.Public.class) // This fcn using mapper to delete variable without annotation @JsonView(Views.Public.class)
     public @ResponseBody
     List<CreditMapper> getCredits() {

@@ -32,8 +32,8 @@ public class CustomerRepository implements CustomerRepoApi {
 
     /*
      * Function save customer in credit-db.customer table
-     * IN: Customer.class without id, database connection
-     * OUT: The same Customer.class with id
+     * IN: Customer object without id, database connection
+     * OUT: The same Customer object with id
      */
     @Override
     public Customer createCustomer(Customer customer) {
@@ -50,7 +50,7 @@ public class CustomerRepository implements CustomerRepoApi {
      * SELECT * FROM customer WHERE id IN(1,2,3,4)
      * and database send response like result list.
      * IN: List of id in long value, database connection
-     * OUT: List of Customer.class
+     * OUT: List of Customer object
      */
     @Override
     public List<Customer> getCustomers(List<Long> idList) {

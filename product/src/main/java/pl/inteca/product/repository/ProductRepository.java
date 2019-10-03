@@ -20,7 +20,9 @@ import java.util.List;
 @PropertySource("classpath:application.properties")
 public class ProductRepository implements ProductRepoApi {
 
-    // values with annotation @Value are inside file /src/main/resources/application.properties
+    /*
+     * values with annotation @Value are inside file /src/main/resources/application.properties
+     */
     @Value("${database.url}")
     private String url;
     @Value("${database.user}")
@@ -46,7 +48,7 @@ public class ProductRepository implements ProductRepoApi {
     }
 
     /*
-     * Function createTable() create table "product" in database
+     * Function create table "product" in database
      * table product have (id, name, value)
      * IN: -
      * OUT -
@@ -68,8 +70,8 @@ public class ProductRepository implements ProductRepoApi {
 
     /*
      * Function save product in credit-db.product table
-     * IN: Product.class without id, database connection
-     * OUT: The same Product.class with id
+     * IN: Product object without id, database connection
+     * OUT: The same Product object with id
      */
     @Override
     public Product createProduct(Product product) {
@@ -96,7 +98,7 @@ public class ProductRepository implements ProductRepoApi {
      * SELECT * FROM products WHERE id IN(1,2,3,4)
      * and database send response like result list.
      * IN: List of id in long value, database connection
-     * OUT: List of Product.class
+     * OUT: List of Product object
      */
     @Override
     public List<Product> getProducts(List<Long> idList) {

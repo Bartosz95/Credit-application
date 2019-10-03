@@ -7,6 +7,10 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class BeanConfig {
+    /*
+     * Bean provide RestTemplate witch can send request to another
+     * Rest Service
+     */
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
         return builder.build();
