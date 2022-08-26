@@ -66,7 +66,7 @@ You can get all credits by
 ```
 curl -X POST http://localhost:8090/GetCredits
 ```
-You can get single client's credits by
+You can get client's credits by
 ```
 curl http://localhost:8090/GetCredits/:personalId
 ```
