@@ -1,12 +1,12 @@
 # CREDIT 
 ## Abstract
-Application gives you a API which can be use to menage loans of bank customers. 
-It consists of three separate modules which are comunication throught http interface.
+Application gives you an API which can be used to manage loans of bank customers. 
+It consists of three separate modules which communicate through http interface.
 There are three services:
 - credit - you can deal with this API,
-- cunstomer where are collected information about customers and it handles requests form credit module,
+- customer where are collected information about customers and it handles requests form credit module,
 - product where are collected information about credits and it also handles requests form credit module,
-Communication with database was done by JDCB module
+Communication with database was done by JDBC module
 
 ## Technologies
 - Java
@@ -20,7 +20,7 @@ Communication with database was done by JDCB module
 - Docker
 
 ## Installation
-First you need to download allication. 
+First you need to download application. 
 [Download](https://github.com/Bartosz95/credit-api/archive/master.zip) and unzip or clone repository from github:
 ```shell script
 git clone https://github.com/Bartosz95/credit-api.git
@@ -54,7 +54,7 @@ curl -X POST http://localhost:8090/CreateCredit
         "personalId": 1234567890 \
     }, \
     "product": { \
-        "name": "motgage credit", \
+        "name": "mortgage credit", \
         "value": 2000 \
     }, \
     "credit": { \
@@ -70,3 +70,4 @@ You can get client's credits by
 ```
 curl http://localhost:8090/GetCredits/:personalId
 ```
+
