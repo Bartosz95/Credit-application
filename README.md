@@ -46,18 +46,18 @@ Content-Type: application/json
 Body message:
 ```json
 {
-	"customer" : {
-		"firstName" : "Jan",
-		"lastName" : "Kowalski",
-		"personalId" : 1234567890
-	},
-	"product" : {
-        "name" : "motgage credit",
-        "value" : 2000
+    "customer": {
+        "firstName": "Jan",
+        "lastName": "Kowalski",
+        "personalId": 1234567890
     },
-    "credit" : {
-		"name": "mortgage"
-	}
+    "product": {
+        "name": "motgage credit",
+        "value": 2000
+    },
+    "credit": {
+        "name": "mortgage"
+    }
 }
 ```
 ### Get Credits
